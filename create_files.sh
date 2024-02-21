@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#Set path to the file which will be disturbed and deformed
+directory_path="/home/lebedmi2/DATA/VASP_data/Ti_test_structures/scripts/structures"
 #E.g. to create 900 structures, set '899'
 num_of_structures=899
 name_of_input_file="Ti_36_INIT_Standard.lmp"
@@ -15,6 +17,7 @@ max_disturb=1.0
 
 for i in $(seq 1 $((num_of_structures+1)))
 do
+  cd $directory_path
   #x=$(echo "scale=5; $min_deform + ($i - 1) * $step" | bc)
   random_deform=$(awk -v min=$min_deform -v max=$max_deform -v seed=$RANDOM 'BEGIN{srand(seed); print int((min+rand()*(max-min))*1000)/1000}')
   x=$RANDOM_FLOAT
