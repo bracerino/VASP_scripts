@@ -21,7 +21,7 @@ do
   random_disturb=$(awk -v min=$min_disturb -v max=$max_disturb -v seed=$RANDOM 'BEGIN{srand(seed); print int((min+rand()*(max-min))*1000)/1000}')
   dist=$RANDOM_FLOAT_2
 
-  atomsk ${name_of_input_file} -disturb $random_disturb $random_disturb $random_disturb -def x $random_deform% -def y $random_deform% -def z $random_deform% POSCAR
+  atomsk ${name_of_input_file} -disturb $random_disturb $random_disturb $random_disturb -def x $random_deform% -def y $random_deform% -def z $random_deform% -separate 0.5 0.2 -sort species up -frac POSCAR
 
   mv "POSCAR" "${i}_${name_of_output_poscar}_${random_disturb}_$random_deform%"
   echo "Created output: ${i}_${name_of_output_poscar}_${random_disturb}_$random_deform%"
