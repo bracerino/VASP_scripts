@@ -1,7 +1,16 @@
 #!/bin/bash
 
-vasp_run="mpirun -np 1 vasp_gpu_mkl"
-directory_path="/home/lebedmi2/DATA/VASP_data/Ti_test_structures/POSCARs" # Update with your directory path
+vasp_run="mpirun -np 8 vasp_cpu_mkl"
+directory_path="/home/lebedmi2/DATA/VASP_data/Ti_test_structures/INT_0_1/POSCARs" # Update with your directory path
+
+# Signal handler for SIGINT
+function handle_sigint() {
+    echo "Script interrupted by user, exiting."
+    exit 1 # Exit script immediately
+}
+
+# Trap SIGINT (Control+C) and call handle_sigint
+trap handle_sigint SIGINT
 
 #Checking if the files with names of VASP directories exists. If yes, do not create it but continue with its content
 if [ ! -f "directory_list.txt" ]; then
@@ -30,7 +39,8 @@ directories_file="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/dire
 start_dir=$(pwd)
 output_file="${directory_path}/OUTPUT_END_of_CYCLES_LIST.txt"
 if [ ! -f "${directory_path}/OUTPUT_END_of_CYCLES_LIST.txt" ]; then
-	echo -e "#FOLDER_NAME\tLAST_DAV_CYCLE\tCONVERGED?\tNELM\tTIME[min]" > "$output_file"
+        echo "Does not exists, creating."
+	echo -e "#FOLDER_NAME\tLAST_DAV_CYCLE\tCONVERGED?\tNELM\tENERGY[eV]\tTIME[min]" > "$output_file"
 fi
 
 mapfile -t dir_names < "$directories_file"
@@ -42,11 +52,15 @@ mapfile -t dir_names < "$directories_file"
 #while IFS= read -r dir_name; do
 for dir_name in "${dir_names[@]}"; do
     folder_path="${directory_path}/$dir_name"
-    echo "$folder_path"
     if [ -d "$folder_path" ]; then # Ensure it's a directory 
         cd "$folder_path"
+        echo -e "\n\n\n===================================== STARTING VASP CALCULATIONS ====================================="
+        echo "$folder_path"
+        echo "====================================================================================================="
         start_time=$(date +%s)
         $vasp_run
+        echo "===================================== CALCULATIONS FINISHED ====================================="
+        echo -e "=====================================================================================================\n\n\n"
         # Check if vasp_file_name exists in h
         if [ -f "$vasp_file_name" ]; then
             echo "FOUND FILE $vasp_file_name in FOLDER $folder_name"
@@ -71,12 +85,15 @@ for dir_name in "${dir_names[@]}"; do
                     	cycle_finished_yes_no="NO"
                     	cycle_number="${second_last_line_arr[1]}"
 			nelm=$NELM
+			ener="${last_line_arr[2]}"
                     else
 			nelm=$NELM
+			ener="${last_line_arr[2]}"
                     	cycle_finished_yes_no="YES"
                     	cycle_number="${second_last_line_arr[1]}"
                     fi 
                 else
+		    ener="${last_line_arr[2]}"
                     cycle_finished_yes_no="NO_$NELM"
                     cycle_number="${last_line_arr[1]}"
                 fi
@@ -91,7 +108,7 @@ for dir_name in "${dir_names[@]}"; do
             duration=$(echo "scale=2; ($end_time - $start_time) / 60" | bc)
             
             
-            echo -e "$folder_path\t$cycle_number\t$cycle_finished_yes_no\t$nelm\t$duration" >> "$output_file"
+            echo -e "$folder_path\t$cycle_number\t$cycle_finished_yes_no\t$nelm\t$ener\t$duration" >> "$output_file"
             sed -i "/^$dir_name$/d" "$directories_file"
         else
             echo "------- NOT FOUND $vasp_file_name in FOLDER $(basename "$folder_name") -------"
@@ -99,10 +116,10 @@ for dir_name in "${dir_names[@]}"; do
             # Append to output file
             end_time=$(date +%s) # Get end time of the loop iteration
             duration=$(echo "scale=2; ($end_time - $start_time) / 60" | bc)
-            echo -e "$folder_path\t0\tNO\tERROR\t$duration" >> "$output_file"
+            echo -e "$folder_path\t0\tNO\tERROR\tERROR\t$duration" >> "$output_file"
             sed -i "/^$dir_name$/d" "$directories_file"
         fi
     fi
-done #< "$directories_file"
+done
 rm -f $directories_file
 echo "FINISHED. OUTPUT IS IN THE FILE: $output_file"
