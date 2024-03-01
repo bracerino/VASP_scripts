@@ -1,4 +1,5 @@
 #!/bin/bash
+export LC_NUMERIC="en_US.UTF-8"
 
 #Set path to the file which will be disturbed and deformed
 directory_path="/home/lebedmi2/DATA/VASP_data/Ti_test_structures/scripts/structures"
