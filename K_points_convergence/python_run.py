@@ -96,7 +96,8 @@ if len(lines)>2:
     
     time_trails=round(float(sys.argv[2]) / 60, 2)
     time_trails = f"{time_trails:.2f}"
-    lines[-1] = "{} {} {} {} {}\t{} {}\t{} {} {} {} {} {}\t{} {} {} {} {} {}\n".format(str(k_spacing), str(k_a_stars), str(k_b_stars), str(k_c_stars), str(time_trails),  str(f"{round(calc.energy.to_numpy(), 7):.7f}"), str(change), 
+    rounded_energy = np.round(calc.energy.to_numpy(), 7)
+    lines[-1] = "{} {} {} {} {}\t{} {}\t{} {} {} {} {} {}\t{} {} {} {} {} {}\n".format(str(k_spacing), str(k_a_stars), str(k_b_stars), str(k_c_stars), str(time_trails),   str(f"{rounded_energy:.7f}"), str(change), 
     str(para_a), str(para_b),str(para_c), str(alpha), str(beta), str(gamma), 
     str(change_lat_a), str(change_lat_b), str(change_lat_c), str(change_alpha), str(change_beta), str(change_gamma))
     print("Correctly written to the output file")
@@ -110,7 +111,8 @@ else:
     k_spacing=f"{round(k_spacing, 3):.3f}"
     time_trails=round(float(sys.argv[2]) / 60, 2)
     time_trails = f"{time_trails:.2f}"
-    lines[-1] = "{} {} {} {} {}\t{} {}\t{} {} {} {} {} {}\t{} {} {} {} {} {}\n".format(str(k_spacing), str(k_a_stars), str(k_b_stars), str(k_c_stars), str(time_trails), str(f"{round(calc.energy.to_numpy(), 7):.7f}"), str("+0.0000"), 
+    rounded_energy = np.round(calc.energy.to_numpy(), 7)
+    lines[-1] = "{} {} {} {} {}\t{} {}\t{} {} {} {} {} {}\t{} {} {} {} {} {}\n".format(str(k_spacing), str(k_a_stars), str(k_b_stars), str(k_c_stars), str(time_trails), str(f"{rounded_energy:.7f}"), str("+0.0000"), 
     str(para_a), str(para_b),str(para_c), str(alpha), str(beta), str(gamma), 
     str("+0.00000"), str("+0.00000"), str("+0.00000"), str("+0.000"), str("+0.000"), str("+0.000"))
     #lines[-1] = lines[-1].strip() + ' ' + str(round(calc.energy.to_numpy(), 7)) + ' 0.0000 ' + str(time_trails) + '\n'
