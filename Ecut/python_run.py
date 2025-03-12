@@ -127,8 +127,10 @@ ax2.plot(ener_cutoff, elapsed_time, marker='s', linestyle='--', color='g', label
 ax2.set_ylabel("Elapsed Time [min]", color='g')
 ax2.tick_params(axis='y', labelcolor='g')
 ax1.axhline(y=0.001, color='#ADD8E6', linestyle='--', linewidth=3, label="Threshold (1 meV/atom)")
-ax1.text(x=min(ener_cutoff), y=0.001 - 0.00005, s="Threshold 1meV/atom", color='gray', fontsize=10, ha='left')
+ax1.text(x=min(ener_cutoff), y=0.0015 - 0.00005, s="Threshold\n1 meV/atom", color='gray', fontsize=10, ha='left')
 ax1.axhline(y=0.000, color='#ADD8E6', linestyle='--', linewidth=1)
+
+ax1.set_ylim(-0.001, 0.015)
 
 #ax1.grid(True)
 fig.tight_layout()
