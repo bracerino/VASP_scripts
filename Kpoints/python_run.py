@@ -3,6 +3,8 @@ import sys
 import re
 import math
 import numpy as np
+import matplotlib.pyplot as plt
+
 pattern = r"ENCUT"
 
 
@@ -120,5 +122,68 @@ else:
     print("Correctly written to the output file")
 with open(input_file_path, 'w') as file:
     file.writelines(lines)
-print("I have finished! Gimme more work!")
+
+
+file_name = "K_SAMPLING_CONVERGENCE_TEST_ENERGY_and_LATT_PARAMETERS.txt"
+output_image = "Kpoints_plot.png"  # Name of the output image file
+
+k_sampling = []
+k_grid = []
+ener_diff_per_atom = []
+elapsed_time = []
+
+# Read the file
+with open(file_name, "r") as file:
+    lines = file.readlines()
+
+    # Skip the header (first line)
+    for line in lines[1:]:
+        columns = line.split()
+
+        # Extract relevant values
+        k_sampling.append(float(columns[0]))  # k-spacing [A^-1]
+        k_grid.append(f"{columns[1]}x{columns[2]}x{columns[3]}")  # k_a x k_b x k_c grid
+        elapsed_time.append(float(columns[4]))  # Elapsed Time [min]
+        ener_diff_per_atom.append(abs(float(columns[6])))  # Absolute Energy Difference per Atom [eV]
+
+filtered_data = [(k_sampling[0], k_grid[0], elapsed_time[0], ener_diff_per_atom[0])] + [
+    (k, g, t, e) for k, g, t, e in zip(k_sampling[1:], k_grid[1:], elapsed_time[1:], ener_diff_per_atom[1:])
+    if t != 0 and e != 0
+]
+
+
+k_sampling_filtered, k_grid_filtered, elapsed_time_filtered, ener_diff_per_atom_filtered = zip(*filtered_data)
+
+# Create custom x-axis labels combining k-sampling values and k-grid sizes
+x_labels_filtered = [f"{k} ({g})" for k, g in zip(k_sampling_filtered, k_grid_filtered)]
+x_positions = range(len(k_sampling_filtered))
+
+
+fig, ax1 = plt.subplots(figsize=(8, 5))
+ax1.axhline(y=0.001, color='#ADD8E6', linestyle='--', linewidth=2, label="Threshold 1 meV/atom")
+ax1.text(x=max(x_positions), y=0.0015 - 0.00005, s="Threshold\n1 meV/atom", color='gray', fontsize=10, ha='left')
+ax1.axhline(y=0.000, color='#ADD8E6', linestyle='--', linewidth=1)
+
+# Plot Energy Difference per Atom
+ax1.plot(x_positions, ener_diff_per_atom_filtered, marker='o', linestyle='-', color='b', label="Energy Difference per Atom", zorder=2)
+ax1.set_xlabel("K-Spacing (Monkhorst-Pack grid) [Å$^{-1}$]")
+ax1.set_ylabel("Energy Difference per Atom [eV]", color='b')
+ax1.tick_params(axis='y', labelcolor='b')
+ax1.invert_xaxis()
+ax1.set_ylim(-0.001, 0.015)
+
+# Create a second y-axis for elapsed time
+ax2 = ax1.twinx()
+ax2.plot(x_positions, elapsed_time_filtered, marker='s', linestyle='--', color='g', label="Elapsed Time", alpha=0.5)
+ax2.set_ylabel("Elapsed Time [min]", color='g')
+ax2.tick_params(axis='y', labelcolor='g')
+
+
+ax1.set_xticks(x_positions)
+ax1.set_xticklabels(x_labels_filtered, rotation=45, ha="right")
+
+fig.tight_layout()
+plt.savefig(output_image, dpi=300, bbox_inches='tight')
+
+
 
