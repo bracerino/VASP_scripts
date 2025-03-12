@@ -123,7 +123,7 @@ ax1.tick_params(axis='y', labelcolor='b')
 
 
 ax2 = ax1.twinx()
-ax2.plot(ener_cutoff, elapsed_time, marker='s', linestyle='--', color='g', label="Elapsed Time")
+ax2.plot(ener_cutoff, elapsed_time, marker='s', linestyle='--', color='g', label="Elapsed Time", alpha=0.5)
 ax2.set_ylabel("Elapsed Time [min]", color='g')
 ax2.tick_params(axis='y', labelcolor='g')
 ax1.axhline(y=0.001, color='#ADD8E6', linestyle='--', linewidth=3, label="Threshold (1 meV/atom)")
