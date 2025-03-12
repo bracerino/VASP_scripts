@@ -5,7 +5,6 @@ ENCUT = 700
 IBRION = -1
 #ISIF = 8
 #NSW = 99
-NBANDS = 210
 LWAVE = .FALSE.
 #ISMEAR = 0
 # ISPIN = 2
@@ -17,7 +16,9 @@ LREAL = Auto # Recommended for more than 30 atoms
 NELM = 150
 
 PREC = Accurate
-
-ISMEAR = 1
-SIGMA = 0.2
+#NBANDS = 210
+#ISMEAR = 1
+#SIGMA = 0.2
+ISMEAR = 0
+SIGMA = 0.05
 
