@@ -115,8 +115,8 @@ with open(file_name, "r") as file:
 
 fig, ax1 = plt.subplots(figsize=(8, 5))
 
-
-ax1.plot(ener_cutoff, ener_diff_per_atom, marker='o', linestyle='-', color='b', label="Energy Difference per Atom")
+enes = [abs(num) for num in ener_diff_per_atom]
+ax1.plot(ener_cutoff, enes, marker='o', linestyle='-', color='b', label="Energy Difference per Atom")
 ax1.set_xlabel("Energy Cutoff [eV]")
 ax1.set_ylabel("Energy Difference per Atom [eV]", color='b')
 ax1.tick_params(axis='y', labelcolor='b')
@@ -127,8 +127,8 @@ ax2.plot(ener_cutoff, elapsed_time, marker='s', linestyle='--', color='g', label
 ax2.set_ylabel("Elapsed Time [min]", color='g')
 ax2.tick_params(axis='y', labelcolor='g')
 ax1.axhline(y=0.001, color='#ADD8E6', linestyle='--', linewidth=3, label="Threshold (1 meV/atom)")
-ax1.text(x=min(ener_cutoff), y=0.001 - 0.00005, s="Threshold (0.001 eV)", color='gray', fontsize=10, ha='left')
-
+ax1.text(x=min(ener_cutoff), y=0.001 - 0.00005, s="Threshold 1meV/atom", color='gray', fontsize=10, ha='left')
+ax1.axhline(y=0.000, color='#ADD8E6', linestyle='--', linewidth=1)
 
 #ax1.grid(True)
 fig.tight_layout()
