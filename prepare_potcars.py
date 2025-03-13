@@ -2,6 +2,7 @@ import os
 # ============ INPUTS, modify these =====================
 #Directory which contains other directories, each of them with different POSCAR for the VASP calculation
 INPUT_POSCAR_FOLDER = f'/home/lebedmi2/DATA/VASP_data/Ti_test_structures/POSCARs'
+#Directory which contains the POTCAR for each element
 INPUT_VASP_POTENTIALS_FOLDER = f'/home/lebedmi2/DATA/VASP_data/Ti_test_structures/potencials/potPAW_PBE.54'
 #========================================================
 
@@ -56,6 +57,36 @@ def create_potcar(INPUT_POSCAR_FOLDER, INPUT_VASP_POTENTIALS_FOLDER, POSCAR_name
                         with open(OUTPUT_POTCAR, 'a') as f:
                             f.writelines(lines_read)
                             print("SUCCESSFULLY ADDED.")
+                    elif elements[idx]+'_sv' in os.listdir(INPUT_VASP_POTENTIALS_FOLDER):
+                        print(f"-----> {elements[idx]} !NOTE!-----------> FOUND in the potentials directory with _sv suffix. Added to the POTCAR.")
+                        element_pot_dir = os.path.join(INPUT_VASP_POTENTIALS_FOLDER, elements[idx]+ "_sv", 'POTCAR')
+                        with open(element_pot_dir, 'r') as f:
+                            lines_read = f.readlines()
+                        with open(OUTPUT_POTCAR, 'a') as f:
+                            f.writelines(lines_read)
+                            print("SUCCESSFULLY ADDED.")
+                    elif elements[idx] + '_pv' in os.listdir(INPUT_VASP_POTENTIALS_FOLDER):
+                        print(
+                            f"-----> {elements[idx]} !NOTE!-----------> FOUND in the potentials directory with _sv suffix. Added to the POTCAR.")
+                        element_pot_dir = os.path.join(INPUT_VASP_POTENTIALS_FOLDER, elements[idx] + "_pv", 'POTCAR')
+                        with open(element_pot_dir, 'r') as f:
+                            lines_read = f.readlines()
+                        with open(OUTPUT_POTCAR, 'a') as f:
+                            f.writelines(lines_read)
+                            print("SUCCESSFULLY ADDED.")
+                    elif elements[idx] + '_pv' in os.listdir(INPUT_VASP_POTENTIALS_FOLDER):
+                        print(
+                            f"-----> {elements[idx]} !NOTE!-----------> FOUND in the potentials directory with _sv suffix. Added to the POTCAR.")
+                        element_pot_dir = os.path.join(INPUT_VASP_POTENTIALS_FOLDER, elements[idx] + "_sv_GW", 'POTCAR')
+                        with open(element_pot_dir, 'r') as f:
+                            lines_read = f.readlines()
+                        with open(OUTPUT_POTCAR, 'a') as f:
+                            f.writelines(lines_read)
+                            print("SUCCESSFULLY ADDED.")
+
+                    else:
+                        print("---------!!!ERROR! DID NOT FIND THE ELEMENT IN ANY FOLDER OF THE POTENTIALS ---------!!!")
+
         with open(POSCAR_file_path, 'w+') as f:
             elements.append('\n')
             elements_counts.append('\n')
@@ -65,7 +96,7 @@ def create_potcar(INPUT_POSCAR_FOLDER, INPUT_VASP_POTENTIALS_FOLDER, POSCAR_name
     else:
         print(f"There is NO {POSCAR_name} in {INPUT_POSCAR_FOLDER} OR the file is EMPTY. \n"
               f"Put {POSCAR_name} into this folder.")
-    print("FINISHED.")
+    print("FINISHED.\n\n\n")
 
 print(INPUT_POSCAR_FOLDER)
 for folder in os.listdir(INPUT_POSCAR_FOLDER):
