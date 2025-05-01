@@ -34,6 +34,9 @@ if [ -d "$directory_path" ]; then
     	current_values=$(sed -n '4p' "KPOINTS")
        	echo "THIRD LINE $current_values"
         start_time=$(date +%s)
+        if [ -f "WAVECAR" ]; then
+    	    rm WAVECAR
+    	fi
     	if [ "$previous_values" != "$current_values" ]; then
     		echo "NOOOOOOOOOOOOOOOOOOOOOOOOOT SKIPPING: $previous_values different than $current_values"
             	mpirun -np $NUMBER_OF_PROCESSORS $VASP_BINARY_NAME
