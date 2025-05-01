@@ -30,6 +30,9 @@ if [ -d "$directory_path" ]; then
         echo "$encut" >> "$output_file"
         # Run the command in the current directory
         start_time=$(date +%s)
+	if [ -f "WAVECAR" ]; then
+	    rm WAVECAR
+	fi
         mpirun -np $NUMBER_OF_PROCESSORS $VASP_BINARY_NAME
         
         end_time=$(date +%s)
